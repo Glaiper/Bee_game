@@ -8,10 +8,10 @@ using Unity.VisualScripting;
 public class Management : MonoBehaviour
 {
     [SerializeField] private int plusBee = 1;
-    
-    
+
+
     [SerializeField] public static Management instance;
-    
+
     [SerializeField] private TMP_Text current_beeText;
     [SerializeField] private TMP_Text current_MoneyText;
     [SerializeField] private TMP_Text current_PersecText;
@@ -34,7 +34,7 @@ public class Management : MonoBehaviour
     [SerializeField] private Coroutine regendelayCoroutine;
     [SerializeField] private WaitForSeconds onesec = new WaitForSeconds(1);
 
-  
+
 
 
     private void Awake()
@@ -49,8 +49,8 @@ public class Management : MonoBehaviour
 
         else
 
-        { 
-       
+        {
+
             Destroy(gameObject);
 
         }
@@ -58,6 +58,7 @@ public class Management : MonoBehaviour
 
     void Start()
     {
+        LoadMoney();
         gageBee = maxBee;
         StartCoroutine(PersecondMoney());
     }
@@ -74,7 +75,7 @@ public class Management : MonoBehaviour
     {
         beeValue = currentBee * upgradevalue;
         persecMoney = beeValue;
-    
+
     }
 
     private void CurrentTextshow()
@@ -117,7 +118,7 @@ public class Management : MonoBehaviour
     {
 
         if (gageBee == 0)
-        { 
+        {
             // 더이상 효과가 발동하지 않도록 함
         }
         else
@@ -126,8 +127,8 @@ public class Management : MonoBehaviour
             gageBee -= 1f;
 
             if (regendelayCoroutine != null)
-            { 
-            
+            {
+
                 StopCoroutine(regendelayCoroutine);
 
             }
@@ -140,7 +141,7 @@ public class Management : MonoBehaviour
     private void CurrentGage() //남은 게이지 양을 계산
     {
 
-        maxGage.value = gageBee / maxBee ;
+        maxGage.value = gageBee / maxBee;
 
         if (maxGage.value == 0f) //0일경우 투명화
         {
@@ -159,6 +160,31 @@ public class Management : MonoBehaviour
         {
             sliderColor.color = Color.green;
         }
+    }
+
+    private void SaveMoney()
+    {
+
+        PlayerPrefs.SetFloat("CurrentMoney", current_money);
+        PlayerPrefs.Save();
+
+    }
+
+    private void LoadMoney()
+    {
+
+        if (PlayerPrefs.HasKey("CurrentMoney"))
+        {
+
+            current_money = PlayerPrefs.GetFloat("CurrentMoney");
+        }
+        else
+        {
+
+            current_money = 0;
+
+        }
+    
     }
 
     IEnumerator Regendelay() 
@@ -189,11 +215,12 @@ public class Management : MonoBehaviour
         {
             yield return onesec;
             current_money += persecMoney;
-            
+            SaveMoney();
         }
 
 
     }
+
 
 
 }
