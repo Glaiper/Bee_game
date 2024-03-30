@@ -11,7 +11,7 @@ public class Management : MonoBehaviour
 
     [Header("게이지 관련")]
 
-    [SerializeField] private int plusBee = 1;
+    [SerializeField] private float plusBee = 1f;
 
     [SerializeField] private Slider maxGage;
 
@@ -31,7 +31,7 @@ public class Management : MonoBehaviour
     private float currentBee;
     [SerializeField] private float regenTime = 0.5f;
     private float persecMoney;
-    private float current_money;
+    [SerializeField] private float current_money;
     private float beeValue;
     private float beeupgradevalue = 0.05f;
     private float honeyupgradevalue = 0.1f;
@@ -39,13 +39,27 @@ public class Management : MonoBehaviour
     private float beeGrade = 1f;
     private float honeyGrade = 1f;
 
-    [Header("1티어 업그레이드")]
-    [SerializeField] private int firstUpnum = 1;
+    [Header("1단계 업그레이드")]
+    [SerializeField] private float firstUpnum = 1f;
     [SerializeField] private Button firstbutton;
     [SerializeField] private float upcostone = 10f;
     [SerializeField] private TMP_Text onetext;
+    [SerializeField] private Slider oneSlider;
 
 
+    [Header("2단계 업그레이드")]
+    [SerializeField] private float secUpnum = 1f;
+    [SerializeField] private Button secbutton;
+    [SerializeField] private float upcosttwo = 100f;
+    [SerializeField] private TMP_Text twotext;
+    [SerializeField] private Slider twoSlider;
+
+    [Header("3단계 업그레이드")]
+    [SerializeField] private float thirdUpnum = 1f;
+    [SerializeField] private Button thirdbutton;
+    [SerializeField] private float upcostthree = 1500f;
+    [SerializeField] private TMP_Text thirdtext;
+    [SerializeField] private Slider thirdSlider;
 
     void Start()
     {
@@ -192,12 +206,13 @@ public class Management : MonoBehaviour
 
     public void Firstupgrade()
     {
-
-        if (firstUpnum == 30)
+        oneSlider.value = firstUpnum / 50f;
+        if (firstUpnum == 50)
 
         {
 
             firstbutton.interactable = false;
+            onetext.text = "Upgrade Complete!";
 
         }
 
@@ -211,10 +226,64 @@ public class Management : MonoBehaviour
             upcostone = upcostone + (upcostone * 0.1f);
             onetext.text = upcostone.ToString("F1");
             firstUpnum++;
+            
+        }
+
+    }
+
+    public void Secondepgrade()
+    {
+        twoSlider.value = secUpnum / 50f;
+        if (secUpnum == 30)
+
+        {
+
+            secbutton.interactable = false;
+            twotext.text = "Upgrade Complete!";
+        }
+
+        else if (current_money >= upcosttwo)
+
+        {
+
+            current_money -= upcosttwo;
+
+            beeupgradevalue += 0.1f;
+            upcosttwo = upcosttwo + (upcosttwo * 0.2f);
+            twotext.text = upcosttwo.ToString("F1");
+            secUpnum++;
 
         }
 
     }
+
+    public void Thirdpgrade()
+    {
+        thirdSlider.value = thirdUpnum / 8f;
+        if (thirdUpnum == 8)
+
+        {
+
+            thirdbutton.interactable = false;
+            thirdtext.text = "Upgrade Complete!";
+
+        }
+
+        else if (current_money >= upcostthree)
+
+        {
+
+            current_money -= upcostthree;
+
+            plusBee += 0.1f;
+            upcostthree = upcostthree + (upcostthree * 0.2f);
+            thirdtext.text = upcostthree.ToString("F1");
+            thirdUpnum++;
+
+        }
+
+    }
+
 
     IEnumerator Regendelay() 
     {
