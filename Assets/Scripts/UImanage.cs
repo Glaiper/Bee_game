@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,19 +8,19 @@ public class UImanage : MonoBehaviour
 {
     [SerializeField] private GameObject storeCanvas;
     [SerializeField] private GameObject menuCanvas;
+    [SerializeField] private GameObject mainCanvas;
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
-        
+        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(storeCanvas);
+        DontDestroyOnLoad(menuCanvas);
+        DontDestroyOnLoad(mainCanvas);
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    
 
     public void StoreExit() //상점 비활성화
     { 

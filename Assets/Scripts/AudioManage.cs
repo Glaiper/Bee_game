@@ -46,11 +46,13 @@ public class AudioManage : MonoBehaviour
         {
             audioSource.volume = volumeSlider.value;
             check1.SetActive(true);
+            volumeSlider.interactable = true;
         }
         else
         {
             audioSource.volume = 0;
             check1.SetActive(false);
+            volumeSlider.interactable = false;
         }
 
     }
