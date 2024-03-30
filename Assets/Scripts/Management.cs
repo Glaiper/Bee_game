@@ -64,8 +64,8 @@ public class Management : MonoBehaviour
 
     private void CalculateMoney()
     {
-        beeValue = currentBee * (beeGrade + beeupgradevalue);
-        honeyValue = honeyValue * (honeyGrade + honeyupgradevalue);
+        beeValue = currentBee * beeGrade * beeupgradevalue;
+        honeyValue = honeyGrade * honeyupgradevalue;
         persecMoney = beeValue + honeyValue;
 
     }
@@ -244,8 +244,7 @@ public class Management : MonoBehaviour
         {
             yield return onesec;
             current_money += persecMoney;
-            Debug.Log(honeyValue);
-            Debug.Log(beeValue);
+
         }
 
 
