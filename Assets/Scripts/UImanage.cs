@@ -6,10 +6,15 @@ using UnityEngine.UI;
 
 public class UImanage : MonoBehaviour
 {
+
+    [Header("Äµ¹ö½º ¸ñ·Ï")]
     [SerializeField] private GameObject storeCanvas;
     [SerializeField] private GameObject menuCanvas;
     [SerializeField] private GameObject mainCanvas;
+    [SerializeField] private GameObject challengesCanvas;
     // Start is called before the first frame update
+
+
 
     private void Awake()
     {
@@ -17,8 +22,11 @@ public class UImanage : MonoBehaviour
         DontDestroyOnLoad(storeCanvas);
         DontDestroyOnLoad(menuCanvas);
         DontDestroyOnLoad(mainCanvas);
+        DontDestroyOnLoad(challengesCanvas);
 
     }
+
+
 
 
 
@@ -39,5 +47,15 @@ public class UImanage : MonoBehaviour
     public void Menuout()
     {
         menuCanvas.SetActive(false);
+    }
+
+    public void Challengein()
+    { 
+        challengesCanvas.SetActive(true);
+    }
+
+    public void ChallengeOut()
+    { 
+        challengesCanvas?.SetActive(false);
     }
 }
