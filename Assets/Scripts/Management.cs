@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class Management : MonoBehaviour
 {
+    private static Management instance;
 
     [Header("게이지 관련")]
 
@@ -15,11 +16,10 @@ public class Management : MonoBehaviour
 
     [SerializeField] private Slider maxGage;
 
-    [SerializeField] private float maxBee = 100f;
-    [SerializeField] private float gageBee;
+    private float maxBee = 100f;
+    private float gageBee;
 
     [SerializeField] private Image sliderColor;
-
     [SerializeField] private Coroutine regendelayCoroutine;
     [SerializeField] private WaitForSeconds onesec = new WaitForSeconds(1);
 
@@ -39,33 +39,38 @@ public class Management : MonoBehaviour
     private float beeGrade = 1f;
     private float honeyGrade = 1f;
 
-    [Header("1단계 업그레이드")]
-    [SerializeField] private float firstUpnum = 1f;
-    [SerializeField] private Button firstbutton;
-    [SerializeField] private float upcostone = 10f;
-    [SerializeField] private TMP_Text onetext;
-    [SerializeField] private Slider oneSlider;
+
+    public static Management Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                GameObject obj = new GameObject("Management");
+                instance = obj.AddComponent<Management>();
+            }
+            return instance;
+        }
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+    }
 
 
-    [Header("2단계 업그레이드")]
-    [SerializeField] private float secUpnum = 1f;
-    [SerializeField] private Button secbutton;
-    [SerializeField] private float upcosttwo = 100f;
-    [SerializeField] private TMP_Text twotext;
-    [SerializeField] private Slider twoSlider;
-
-    [Header("3단계 업그레이드")]
-    [SerializeField] private float thirdUpnum = 1f;
-    [SerializeField] private Button thirdbutton;
-    [SerializeField] private float upcostthree = 1500f;
-    [SerializeField] private TMP_Text thirdtext;
-    [SerializeField] private Slider thirdSlider;
 
     void Start()
     {
         LoadPlayerData();
         gageBee = maxBee;
         StartCoroutine(PersecondMoney());
+
     }
 
     // Update is called once per frame
@@ -78,11 +83,29 @@ public class Management : MonoBehaviour
 
     private void CalculateMoney() //돈 계산 함수
     {
-        beeValue = currentBee * beeGrade * beeupgradevalue;
+        beeValue = currentBee * beeGrade * beeupgradevalue; 
         honeyValue = honeyGrade * honeyupgradevalue;
         persecMoney = beeValue + honeyValue;
-
     }
+
+
+    //이 밑으로는 불러오기를 위한 메서드
+    public float GetCurrentMoney() => current_money;
+
+    public void SetCurrentMoney(float money) => current_money = money;
+
+    public float Gethoneyupgradevalue() => honeyupgradevalue;
+
+    public void Sethoneyupgradevalue(float honeyupval) => honeyupgradevalue = honeyupval;
+
+    public float GetBeeUpVal() => beeupgradevalue;
+
+    public void SetBeeUpVal(float beeupval) => beeupgradevalue = beeupval;
+
+    public float GetPlusbee() => plusBee;
+
+    public void SetPlusbee(float plusbee) => plusBee = plusbee;
+
 
     private void CurrentTextshow()
     {
@@ -142,7 +165,6 @@ public class Management : MonoBehaviour
 
     private void CurrentGage() //남은 게이지 양을 계산
     {
-
         maxGage.value = gageBee / maxBee;
 
         if (maxGage.value == 0f) //0일경우 투명화
@@ -153,6 +175,7 @@ public class Management : MonoBehaviour
         else if (maxGage.value <= 0.25f) // 25%이하일경우 붉은색
         {
             sliderColor.color = Color.red;
+
         }
 
         else //25%초과일경우 초록색
@@ -160,7 +183,7 @@ public class Management : MonoBehaviour
             sliderColor.color = Color.green;
         }
     }
-
+    
     
     public void SavePlayerData()
     {
@@ -172,12 +195,7 @@ public class Management : MonoBehaviour
         PlayerPrefs.SetFloat("BeeupValue", beeupgradevalue);
 
         // 업그레이드 수치
-        PlayerPrefs.SetFloat("FirstUpnum", firstUpnum);
-        PlayerPrefs.SetFloat("Upcostone", upcostone);
-        PlayerPrefs.SetFloat("Secupnum", secUpnum);
-        PlayerPrefs.SetFloat("Upcosttow", upcosttwo);
-        PlayerPrefs.SetFloat("ThirdUpnum", thirdUpnum);
-        PlayerPrefs.SetFloat("UpcostThree", upcostthree);
+
 
 
         PlayerPrefs.Save();
@@ -193,13 +211,7 @@ public class Management : MonoBehaviour
         beeupgradevalue = PlayerPrefs.GetFloat("BeeupValue", 0.05f);
         honeyupgradevalue = PlayerPrefs.GetFloat("HoneyUpValue", 0.1f);
 
-        //업그레이드 수치 
-        firstUpnum = PlayerPrefs.GetFloat("FirstUpnum", 1);
-        upcostone = PlayerPrefs.GetFloat("Upcostone", 1);
-        secUpnum = PlayerPrefs.GetFloat("Secupnum", 1);
-        upcosttwo = PlayerPrefs.GetFloat("Upcosttow", 100);
-        thirdUpnum = PlayerPrefs.GetFloat("ThirdUpnum", 1);
-        upcostthree = PlayerPrefs.GetFloat("UpcostThree", 1500);
+
     }
 
     public void DeletePlayerData()
@@ -226,68 +238,7 @@ public class Management : MonoBehaviour
         SceneManager.LoadScene(currentSceneName);
     }
 
-    public void Firstupgrade() // 1티어 1번째 업그레이드
-    {
-        oneSlider.value = firstUpnum / 50f;
-        if (firstUpnum == 50)
 
-        {
-            firstbutton.interactable = false;
-            onetext.text = "Upgrade Complete!";
-        }
-
-        else if (current_money >= upcostone)
-
-        {
-            current_money -= upcostone;
-            honeyupgradevalue += 0.1f;
-            upcostone = upcostone + (upcostone * 0.1f);
-            onetext.text = upcostone.ToString("F1");
-            firstUpnum++;
-        }
-    }
-
-    public void Secondepgrade() // 1티어 2번째 업그레이드
-    {
-        twoSlider.value = secUpnum / 50f;
-
-        if (secUpnum == 30)
-        {
-            secbutton.interactable = false;
-            twotext.text = "Upgrade Complete!";
-        }
-
-        else if (current_money >= upcosttwo)
-
-        {
-            current_money -= upcosttwo;
-            beeupgradevalue += 0.1f;
-            upcosttwo = upcosttwo + (upcosttwo * 0.2f);
-            twotext.text = upcosttwo.ToString("F1");
-            secUpnum++;
-        }
-    }
-
-    public void Thirdpgrade() // 1티어 3번째 업그레이드
-    {
-        thirdSlider.value = thirdUpnum / 8f;
-        if (thirdUpnum == 8)
-
-        {
-            thirdbutton.interactable = false;
-            thirdtext.text = "Upgrade Complete!";
-        }
-
-        else if (current_money >= upcostthree)
-
-        {
-            current_money -= upcostthree;
-            plusBee += 0.1f;
-            upcostthree = upcostthree + (upcostthree * 0.2f);
-            thirdtext.text = upcostthree.ToString("F1");
-            thirdUpnum++;
-        }
-    }
 
 
     IEnumerator Regendelay() //클릭 후 리젠할때 딜레이를 주는 함수

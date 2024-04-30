@@ -15,6 +15,7 @@ public class AudioManage : MonoBehaviour
 
     void Start()
     {
+        
         // AudioSource 컴포넌트를 찾아서 가져옴
         audioSource = audioSourceMusic;
 
@@ -23,14 +24,12 @@ public class AudioManage : MonoBehaviour
 
         // 루프 재생
         audioSource.loop = true;
-
-        // 볼륨 설정 (0.0 ~ 1.0 사이 값)
-        audioSource.volume = 0.2f;
-
         // 배경음악 재생
         audioSource.Play();
 
         volumeSlider.onValueChanged.AddListener(VolumeChanged);
+
+        LoadPlayerData();
     }
 
     void VolumeChanged(float volume)
@@ -56,5 +55,19 @@ public class AudioManage : MonoBehaviour
         }
 
     }
+
+    public void PlayerSaveData()
+
+    {
+         PlayerPrefs.SetFloat("Voulume", audioSource.volume);
+         PlayerPrefs.SetFloat("Slider", volumeSlider.value);
+    }
+
+    public void LoadPlayerData()
+    {
+        audioSource.volume = PlayerPrefs.GetFloat("Voulume", 0.1f);
+        volumeSlider.value = PlayerPrefs.GetFloat("Slider", 0.1f);
+    }
+
 
 }
