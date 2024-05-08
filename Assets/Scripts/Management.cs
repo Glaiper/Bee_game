@@ -39,6 +39,12 @@ public class Management : MonoBehaviour
     private float beeGrade = 1f;
     private float honeyGrade = 1f;
 
+    [Header("업적 관련")]
+
+    private int upgradecount;
+    private float playTimeInSeconds = 0f;
+    [SerializeField] private TMP_Text totalPlaytime;
+ 
 
     public static Management Instance
     {
@@ -75,7 +81,7 @@ public class Management : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    { 
         CurrentGage();
         CalculateMoney();
         CurrentTextshow();
@@ -106,6 +112,17 @@ public class Management : MonoBehaviour
 
     public void SetPlusbee(float plusbee) => plusBee = plusbee;
 
+    public float GetCurrentBee() => currentBee;
+
+    public void SetCurrentBee(float curbee) => currentBee = curbee;
+
+    public int GetUpgradeCount() => upgradecount;
+
+    public void SetUpgradeCount(int upcount) => upgradecount = upcount;
+
+    public float GetPlayTime() => playTimeInSeconds;
+
+    public void SetPlayTime(float playTime) => playTimeInSeconds = playTime;
 
     private void CurrentTextshow()
     {
@@ -153,7 +170,7 @@ public class Management : MonoBehaviour
         else
         {
             currentBee += plusBee;
-            gageBee -= 1f;
+            gageBee -= 1;
 
             if (regendelayCoroutine != null)
             {
@@ -193,6 +210,7 @@ public class Management : MonoBehaviour
         PlayerPrefs.SetFloat("PersecMoney", persecMoney);
         PlayerPrefs.SetFloat("HoneyUpvalue", honeyupgradevalue);
         PlayerPrefs.SetFloat("BeeupValue", beeupgradevalue);
+        PlayerPrefs.SetFloat("PlayTime", playTimeInSeconds);
 
         // 업그레이드 수치
 
@@ -205,39 +223,32 @@ public class Management : MonoBehaviour
     public void LoadPlayerData()
     {
         // 기본 세팅값들
-        currentBee = PlayerPrefs.GetFloat("Bees", 0);
+        currentBee = PlayerPrefs.GetInt("Bees", 0);
         current_money = PlayerPrefs.GetFloat("CurrentMoney", 0);
         persecMoney = PlayerPrefs.GetFloat("PersecMoney", 0);
         beeupgradevalue = PlayerPrefs.GetFloat("BeeupValue", 0.05f);
         honeyupgradevalue = PlayerPrefs.GetFloat("HoneyUpValue", 0.1f);
-
+        playTimeInSeconds = PlayerPrefs.GetFloat("PlayTime", 0f);
 
     }
 
     public void DeletePlayerData()
     {
-        PlayerPrefs.DeleteKey("CurrentMoney");
-        PlayerPrefs.DeleteKey("Bees");
-        PlayerPrefs.DeleteKey("PersecMoney");
-        PlayerPrefs.DeleteKey("BeeupValue");
-        PlayerPrefs.DeleteKey("HoneyUpValue");
 
-        PlayerPrefs.DeleteKey("FirstUpnum");
-        PlayerPrefs.DeleteKey("Upcostone");
-        PlayerPrefs.DeleteKey("Secupnum");
-        PlayerPrefs.DeleteKey("Upcosttow");
-        PlayerPrefs.DeleteKey("ThirdUpnum");
-        PlayerPrefs.DeleteKey("UpcostThree");
-
-        ReloadCurrentScene();
+        PlayerPrefs.DeleteAll();
+        Application.Quit();
     }
 
-    public void ReloadCurrentScene()
-    { 
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
-    }
+    public void TimeCheck()
+    {
 
+        int hours = Mathf.FloorToInt(playTimeInSeconds / 3600);
+        int minutes = Mathf.FloorToInt((playTimeInSeconds % 3600) / 60);
+        int seconds = Mathf.FloorToInt(playTimeInSeconds % 60);
+
+        string formattedPlayTime = string.Format("{0}:{1:D2}:{2:D2}", hours, minutes, seconds);
+        totalPlaytime.text = formattedPlayTime;
+    }
 
 
 
@@ -264,7 +275,9 @@ public class Management : MonoBehaviour
         {
             yield return onesec;
             current_money += persecMoney;
-
+            playTimeInSeconds += 1;
+            TimeCheck();
+            
         }
     }
 

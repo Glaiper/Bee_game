@@ -69,5 +69,4 @@ public class AudioManage : MonoBehaviour
         volumeSlider.value = PlayerPrefs.GetFloat("Slider", 0.1f);
     }
 
-
 }

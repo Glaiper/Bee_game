@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,9 +13,12 @@ public class UImanage : MonoBehaviour
     [SerializeField] private GameObject menuCanvas;
     [SerializeField] private GameObject mainCanvas;
     [SerializeField] private GameObject challengesCanvas;
+
+    [Header("도전과제 팝업")]
+    [SerializeField] private TMP_Text challHeader;
+    [SerializeField] private TMP_Text descriptions;
+    [SerializeField] private Image challIcon;
     // Start is called before the first frame update
-
-
 
     private void Awake()
     {
@@ -26,7 +30,13 @@ public class UImanage : MonoBehaviour
 
     }
 
-
+    public void ShowChallenge(string name, string description, Sprite icon)
+    {
+        challHeader.text = name;
+        descriptions.text = description;
+        challIcon.sprite = icon;
+        gameObject.SetActive(true);
+    }
 
 
 
