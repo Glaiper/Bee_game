@@ -30,15 +30,6 @@ public class UImanage : MonoBehaviour
 
     }
 
-    public void ShowChallenge(string name, string description, Sprite icon)
-    {
-        challHeader.text = name;
-        descriptions.text = description;
-        challIcon.sprite = icon;
-        gameObject.SetActive(true);
-    }
-
-
 
     public void StoreExit() //상점 비활성화
     { 
